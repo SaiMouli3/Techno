@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Delete Employee</title>
+</head>
+<body>
+
+  <h2>Delete Employee</h2>
+  <p>Are you sure you want to delete "{{ employee.emp_name }}"?</p>
+  <form method="post" action="{% url 'employee_delete_view' employee.emp_ssn %}">
+    {% csrf_token %}
+    <button type="submit">Delete</button>
+  </form>
+
+</body>
+</html>

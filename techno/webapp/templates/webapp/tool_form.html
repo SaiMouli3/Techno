@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tool Form</title>
+</head>
+<body>
+
+<h2>Tool Form</h2>
+
+<form method="post" action="{% url 'tool_create_view' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>

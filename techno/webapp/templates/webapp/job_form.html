@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Job Form</title>
+</head>
+<body>
+
+<h2>Job Form</h2>
+
+<form method="post" action="{% url 'job_create_view' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+</form>
+
+</body>
+</html>
+
