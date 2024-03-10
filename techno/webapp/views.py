@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .forms import EmployeeForm, ToolForm, JobForm
-from .models import Employee, Tool, Job
+from .forms import EmployeeForm, ToolForm, JobForm, EmployeessnForm
+from .models import Employee, Tool, Job,Performs
+from django.db.models import Sum
+
 
 
 def employee_create_view(request):
@@ -130,3 +132,42 @@ def job_update_view(request, job_id):
 
 def success_page(request):
     return render(request, 'webapp/success_page.html')
+
+
+def calculate_efficiency(emp_ssn):
+    performs_aggregated = Performs.objects.filter(emp_ssn=emp_ssn).aggregate(
+        shift_duration_sum=Sum('shift_duration'),
+        partial_shift_sum=Sum('partial_shift'),
+        target_sum=Sum('target'),
+        achieved_sum=Sum('achieved')
+    )
+
+    shift_duration_sum = performs_aggregated['shift_duration_sum']
+    partial_shift_sum = performs_aggregated['partial_shift_sum']
+    target_sum = performs_aggregated['target_sum']
+    achieved_sum = performs_aggregated['achieved_sum']
+
+    if shift_duration_sum and partial_shift_sum and target_sum and achieved_sum:
+        x = target_sum * (partial_shift_sum / shift_duration_sum)
+        efficiency = achieved_sum / x
+        return efficiency
+    else:
+        return None
+
+def efficiency_view(request):
+    efficiency = None
+
+    if request.method == 'POST':
+        form = EmployeessnForm(request.POST)
+        if form.is_valid():
+            emp_ssn = form.cleaned_data['emp_ssn']
+            efficiency = calculate_efficiency(emp_ssn)*100
+    else:
+        form = EmployeessnForm()
+
+    return render(request, 'webapp/efficiency_template.html', {'form': form, 'efficiency': efficiency})
+
+
+    
+
+

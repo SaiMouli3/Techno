@@ -26,4 +26,8 @@ class JobForm(forms.ModelForm):
     )
 
 
+class EmployeessnForm(forms.Form):
+    emp_ssn = forms.CharField(label='Employee SSN', max_length=20)
+
+
 
